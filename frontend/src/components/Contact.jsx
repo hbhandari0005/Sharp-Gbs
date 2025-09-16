@@ -1,34 +1,39 @@
 import { useState } from "react";
+import axios from "axios";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import AnimatedPage from "./AnimatedPage";
 import Button from "@mui/material/Button";
+const API_URL = import.meta.env.VITE_API;
 export default function ContactUs() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const mailtoLink = `mailto:sampuranpandey03@gmail.com?subject=Contact from ${form.name}&body=Name: ${form.name}%0D%0AEmail: ${form.email}%0D%0AMessage: ${form.message}`;
-
-    window.location.href = mailtoLink;
+    try {
+      const res = await axios.post(`${API_URL}/contact`, form);
+      if (res.data.success) {
+        setSuccess(true);
+        setForm({ name: "", email: "", message: "" });
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+    }
   };
+
   return (
     <AnimatedPage>
       <main className="px-6 mb-4 text-gray-800 max-w-5xl mx-auto leading-relaxed">
-        <div className="flex flex-col  bg-white shadow-lg lg:flex-row items-center justify-center px-4 py-4 lg:py-14 gap-10">
+        <div className="flex flex-col bg-white shadow-lg lg:flex-row items-center justify-center px-4 py-4 lg:py-14 gap-10">
           {/* Left side - Lottie animation */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center items-center text-center lg:text-left">
             <h1 className="text-3xl font-bold mb-3">
-              Let's talk about{" "}
-              <span className="text-purple-600">everything!</span>
+              Let's talk about <span className="text-purple-600">everything!</span>
             </h1>
             <DotLottieReact
               src="https://lottie.host/94a723c2-146e-480a-9822-d01e3cde9ca4/Mkre1yDMOm.lottie"
@@ -36,6 +41,7 @@ export default function ContactUs() {
               autoplay
               style={{ width: 300, height: 300 }}
             />
+            {success && <p className="text-green-600 mt-2">Message sent successfully!</p>}
           </div>
 
           {/* Right side - Form */}
@@ -78,16 +84,6 @@ export default function ContactUs() {
                   className="!bg-black !text-white !normal-case !whitespace-nowrap !px-6 !h-fit !py-3 md:!py-3 md:!px-6  !rounded hover:bg-gray-800 transition"
                 >
                   Send Message
-                </Button>
-                <Button
-                  type="submit"
-                  href="https://wa.me/9097778000"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="contained"
-                  className="!bg-black !text-green-400 !normal-case !whitespace-nowrap !px-6 !h-fit !py-3 md:!py-3 md:!px-6 !rounded hover:bg-gray-800 transition"
-                >
-                  WhatsApp Us
                 </Button>
               </div>
             </form>
