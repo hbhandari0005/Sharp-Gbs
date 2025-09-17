@@ -23,10 +23,11 @@ app.post("/contact", async (req, res) => {
         .json({ success: false, msg: "All fields required" });
 
     await supabase.from("contacts").insert([{ name, email, phone, message }]);
+    return res.status(200).json({ success: true});
   } 
   catch (err) {
     console.error("Supabase insert error:", err);
-    return res.status(505).json({ success: false, msg: "Database error" });
+    return res.status(500).json({ success: false, msg: "Database error" });
   }
 });
 

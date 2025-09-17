@@ -21,9 +21,8 @@ export default function ContactUs() {
     e.preventDefault();
 
     try {
-      console.log(form,typeof(form.phone))
       const res = await axios.post(`${API_URL}/contact`, form);
-      if (res.data.success) {
+      if (res.status===200) {
         setSuccess(true);
         setForm({ name: "", email: "", phone: "", message: "" });
       }
