@@ -15,20 +15,22 @@ const supabase = createClient(
 );
 
 app.post("/contact", async (req, res) => {
-  const { name, email, message } = req.body;
-  if (!name || !email || !message) return res.status(400).json({ success:false, msg:"All fields required" });
+  try {
+    const { name, email, phone, message } = req.body;
+    if (!name || !email || !phone || !message)
+      return res
+        .status(400)
+        .json({ success: false, msg: "All fields required" });
 
-  const { data, error } = await supabase
-    .from("contacts")
-    .insert([{ name, email, message }]);
-
-  if (error) {
-    console.error("Supabase insert error:", error);
-    return res.status(500).json({ success:false, msg:"Database error" });
+    await supabase.from("contacts").insert([{ name, email, phone, message }]);
+  } 
+  catch (err) {
+    console.error("Supabase insert error:", err);
+    return res.status(505).json({ success: false, msg: "Database error" });
   }
-
-  res.json({ success: true, data });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);

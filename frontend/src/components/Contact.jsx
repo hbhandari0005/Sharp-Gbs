@@ -5,7 +5,12 @@ import AnimatedPage from "./AnimatedPage";
 import Button from "@mui/material/Button";
 const API_URL = import.meta.env.VITE_API;
 export default function ContactUs() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
@@ -16,10 +21,11 @@ export default function ContactUs() {
     e.preventDefault();
 
     try {
+      console.log(form,typeof(form.phone))
       const res = await axios.post(`${API_URL}/contact`, form);
       if (res.data.success) {
         setSuccess(true);
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", phone: "", message: "" });
       }
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -33,7 +39,8 @@ export default function ContactUs() {
           {/* Left side - Lottie animation */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center items-center text-center lg:text-left">
             <h1 className="text-3xl font-bold mb-3">
-              Let's talk about <span className="text-purple-600">everything!</span>
+              Let's talk about{" "}
+              <span className="text-purple-600">everything!</span>
             </h1>
             <DotLottieReact
               src="https://lottie.host/94a723c2-146e-480a-9822-d01e3cde9ca4/Mkre1yDMOm.lottie"
@@ -41,7 +48,9 @@ export default function ContactUs() {
               autoplay
               style={{ width: 300, height: 300 }}
             />
-            {success && <p className="text-green-600 mt-2">Message sent successfully!</p>}
+            {success && (
+              <p className="text-green-600 mt-2">Message sent successfully!</p>
+            )}
           </div>
 
           {/* Right side - Form */}
@@ -64,6 +73,16 @@ export default function ContactUs() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Your email"
+                required
+                className="border border-gray-300 p-3 rounded focus:outline-none focus:border-purple-500"
+              />
+              <input
+                type="text"
+                id="phone"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+91 98765 XXXXX"
                 required
                 className="border border-gray-300 p-3 rounded focus:outline-none focus:border-purple-500"
               />
